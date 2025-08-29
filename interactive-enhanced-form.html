@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Registration Form</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
+      margin: 0;
+      padding: 0;
+    }
+    main {
+      max-width: 700px;
+      margin: 3rem auto;
+      padding: 2rem;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+      animation: fadeIn 1s ease-in;
+    }
+    h2 {
+      color: #34495e;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    fieldset {
+      border: 1px solid #ccc;
+      padding: 1.5rem;
+      border-radius: 8px;
+    }
+    legend {
+      font-weight: bold;
+      color: #2c3e50;
+    }
+    .form-group {
+      position: relative;
+      margin-top: 1rem;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: #6c5ce7;
+      box-shadow: 0 0 6px rgba(108,92,231,0.5);
+      transform: scale(1.02);
+    }
+    label {
+      position: absolute;
+      left: 12px;
+      top: 12px;
+      background: white;
+      padding: 0 5px;
+      font-size: 0.9rem;
+      color: #888;
+      pointer-events: none;
+      transition: 0.3s;
+    }
+    input:focus + label,
+    input:not(:placeholder-shown) + label {
+      top: -8px;
+      left: 8px;
+      font-size: 0.75rem;
+      color: #6c5ce7;
+    }
+    button {
+      padding: 1rem;
+      background: #6c5ce7;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+    button:hover {
+      background: #5a4bcf;
+      transform: scale(1.05);
+    }
+    .error {
+      color: red;
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
+    /* Progress Bar */
+    .progress-container {
+      background: #eee;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+    .progress-bar {
+      height: 10px;
+      width: 0;
+      background: #6c5ce7;
+      transition: width 0.4s ease;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h2>Interactive Registration Form</h2>
+
+    <!-- Progress Bar -->
+    <div class="progress-container">
+      <div class="progress-bar" id="progress"></div>
+    </div>
+
+    <form id="regForm">
+      <fieldset>
+        <legend>Personal Info</legend>
+        
+        <div class="form-group">
+          <input type="text" id="fullname" name="fullname" placeholder=" " required>
+          <label for="fullname">Full Name</label>
+        </div>
+
+        <div class="form-group">
+          <input type="email" id="email" name="email" placeholder=" " required>
+          <label for="email">Email</label>
+        </div>
+
+        <div class="form-group">
+          <input type="tel" id="phone" name="phone" placeholder=" " required pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}">
+          <label for="phone">Phone (123-456-7890)</label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Account Details</legend>
+        
+        <div class="form-group">
+          <input type="text" id="username" name="username" placeholder=" " required minlength="5">
+          <label for="username">Username</label>
+        </div>
+
+        <div class="form-group">
+          <input type="password" id="password" name="password" placeholder=" " required minlength="6">
+          <label for="password">Password</label>
+        </div>
+
+        <div class="form-group">
+          <input type="password" id="confirm-password" name="confirm-password" placeholder=" " required>
+          <label for="confirm-password">Confirm Password</label>
+          <p class="error" id="password-error"></p>
+        </div>
+      </fieldset>
+
+      <button type="submit">Submit</button>
+    </form>
+  </main>
+
+  <script>
+    const form = document.getElementById('regForm');
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirm-password');
+    const error = document.getElementById('password-error');
+    const progressBar = document.getElementById('progress');
+    const inputs = form.querySelectorAll('input[required]');
+
+    // Password match check
+    confirmPassword.addEventListener('input', () => {
+      if (confirmPassword.value !== password.value) {
+        error.textContent = "Passwords do not match!";
+      } else {
+        error.textContent = "";
+      }
+    });
+
+    // Progress bar update
+    form.addEventListener('input', () => {
+      let filled = 0;
+      inputs.forEach(input => {
+        if (input.value.trim() !== "") filled++;
+      });
+      let percent = (filled / inputs.length) * 100;
+      progressBar.style.width = percent + "%";
+    });
+
+    // Prevent submit if invalid
+    form.addEventListener('submit', (e) => {
+      if (confirmPassword.value !== password.value) {
+        e.preventDefault();
+        alert("Please fix the errors before submitting.");
+      }
+    });
+  </script>
+</body>
+</html>
